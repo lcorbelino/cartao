@@ -1,0 +1,82 @@
+<head>
+    <title>My A-Frame Scene</title>
+  </head>
+
+<!-- include A-Frame obviously -->
+<script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
+<!-- include ar.js for A-Frame -->
+<script src="./js/aframe-ar.js"></script>
+
+<script src="https://unpkg.com/aframe-chromakey-material/dist/aframe-chromakey-material.min.js"></script> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/addons/p5.dom.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/addons/p5.sound.min.js"></script>
+<script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/v4.1.2/dist/aframe-extras.min.js"></script>
+<script src="https://rawgit.com/rdub80/aframe-gui/master/dist/aframe-gui.min.js"></script>
+<script src="https://rawgit.com/nicolocarpignoli/nicolocarpignoli.github.io/master/ar-playground/events.js"></script>
+
+<body style='margin : 0px; overflow: hidden;'>
+  <!--<button id="play-button">Play</button>-->
+  <a-scene embedded artoolkit="sourceType: webcam; debugUIEnabled: false;cameraParametersUrl:'./data/data/camera_para.dat'">
+    <a-assets>
+      <video id="videograv" autoplay="true" loop="true" src="umquarto.mp4"></video>
+      <img id="whats" src="whatsapp.png">
+    </a-assets>
+
+    <a-marker markerhandler emitevents="true"  cursor="rayOrigin: mouse"  id="marcador"  >
+    
+      <!-- create your content here. just a box for now -->
+      <a-box position='0 0.5 0 ' rotation ='0 0 -90' opacity= '0'>     
+        <a-video class="video" autoplay="true" material="shader: chromakey; src: #videograv; color: 0.1 0.9 0.2"  ></a-video>
+       </a-box>
+    
+       <!--<a-entity   cursor-listener rotation ="-90 0 0" position='0 0 1 'geometry="primitive: plane; height: 1.2; width: 1.2" material="color: blue">
+        <a-image id="img" src="#whats"  position ='0 0 0.2'>   </a-image>     </a-entity>-->
+        <a-image id="img" cursor-listener rotation ="-90 0 0" src="#whats"  position ='0 0 1'>   </a-image>
+  </a-marker>
+  <a-entity camera></a-entity>
+    
+  </a-scene>
+</body>
+<script>
+function teste(){
+  console.log('teste');
+}
+AFRAME.registerComponent('cursor-listener', {
+  init: function () {
+    this.el.addEventListener('click', function (evt) {
+      console.log('I was clicked at: ', evt.detail.intersection.point);
+      window.location = "https://api.whatsapp.com/send?phone=5567992811531&text=Ola%20peguei%20o%20seu%20contato%20pelo%20cartao";
+    });
+  }
+});
+
+function setup() {
+            song = loadSound('audio.mp3');
+            createCanvas(720, 200);
+      }
+      AFRAME.registerComponent('markerhandler', {
+	      init: function() {
+		      // Set up the tick throttling. Will check if marker is active every 500ms
+		      this.tick = AFRAME.utils.throttleTick(this.tick, 500, this);
+	      },
+	      tick: function(t, dt) {          
+                  var vid = document.getElementById('videograv');
+                  if (typeof song !== 'undefined'){
+                        if(document.querySelector("#marcador").object3D.visible == true && !song.isPlaying() ) { // && playing == false - para tocar 1 vez
+                              //MARKER IS PRESENT
+                        song.play();
+                        vid.play();
+                  //intro2.play();
+                        }
+                        else if (!document.querySelector("#marcador").object3D.visible == true && song.isPlaying() ) {
+                              
+                              song.pause();
+                              
+                              vid.pause();
+                        // MARKER IS HIDDEN, do nothing (up to you)
+                        }
+                  }
+         }
+      });
+</script>
