@@ -44,7 +44,7 @@ function teste(){
 }
 AFRAME.registerComponent('cursor-listener', {
   init: function () {
-    this.el.addEventListener('click', function (evt) {
+    this.el.addEventListener('mouseup', function (evt) {
       console.log('I was clicked at: ', evt.detail.intersection.point);
       window.location = "https://api.whatsapp.com/send?phone=5567992811531&text=Ola%20peguei%20o%20seu%20contato%20pelo%20cartao";
     });
